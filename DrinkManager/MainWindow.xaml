@@ -3,10 +3,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:util="clr-namespace:DrinkManager.Utils"
         xmlns:local="clr-namespace:DrinkManager"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Drink Manager" Height="350" Width="525">
+    <Window.Resources>
+        <util:BindingProxy x:Key="proxy" Data="{Binding}"/>
+    </Window.Resources>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Button 1" Grid.Column="0" Margin="5,5,2.5,2.5"/>
+            <Button Content="Button 2" Grid.Column="1" Margin="2.5,5,2.5,2.5"/>
+            <Button Content="Button 3" Grid.Column="2" Margin="2.5,5,5,2.5"/>
+        </Grid>
+        <DataGrid Grid.Row="1" Margin="5,2.5,5,5" AutoGenerateColumns="False" ItemsSource="{Binding Data.Drinks, Source={StaticResource proxy}, diag:PresentationTraceSources.TraceLevel=High}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Drink" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Category" Binding="{Binding Category}"/>
+                <DataGridTextColumn Header="Style" Binding="{Binding Style}"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

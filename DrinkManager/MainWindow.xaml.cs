@@ -22,6 +22,7 @@ namespace DrinkManager
     {
         public MainWindow()
         {
+            this.DataContext = new DrinkManagerVM();
             InitializeComponent();
         }
     }
