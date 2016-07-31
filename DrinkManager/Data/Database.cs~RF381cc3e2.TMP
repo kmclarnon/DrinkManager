@@ -17,7 +17,7 @@ namespace DrinkManager.Data
         public static Database Instance { get { return LAZY_INSTANCE.Value; } }
 
         private readonly string _dbLocation;
-        private readonly Dictionary<string, object> _tables;
+        private readonly Dictionary<string, ITable<int>> _tables;
 
         private Database()
         {
@@ -35,24 +35,23 @@ namespace DrinkManager.Data
                     throw e;
                 }
             }
-            _tables = new Dictionary<string, object>();
+            _tables = new Dictionary<string, ITable<int>>();
         }
 
         public List<T> GetElements<T>(string tableName)
         {
-            return GetTable<T>(tableName).GetElements();
+
         }
 
-        private Table<int, T> GetTable<T>(string tableName)
+        private ITable<T> GetTable(string tableName)
         {
-            object result;
+            ITable<int> result;
             if (!_tables.TryGetValue(tableName, out result))
             {
                 result = new Table<int, T>(GetTableFile(tableName), "Id");
                 _tables[tableName] = result;
+                return result;
             }
-
-            return (Table<int, T>)result;
         }
 
         private string GetTableFile(string tableName)

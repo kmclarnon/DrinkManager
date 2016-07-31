@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DrinkManager.DataSource
+namespace DrinkManager.DataSource.Daos
 {
     public class DrinkDao : BaseDao<Drink>
     {

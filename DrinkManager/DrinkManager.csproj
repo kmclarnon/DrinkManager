@@ -66,7 +66,8 @@
     </Compile>
     <Compile Include="Data\BaseDao.cs" />
     <Compile Include="Data\Database.cs" />
-    <Compile Include="Data\DrinkDao.cs" />
+    <Compile Include="Data\Daos\DrinkDao.cs" />
+    <Compile Include="Data\Table.cs" />
     <Compile Include="Model\Drink.cs" />
     <Compile Include="ViewModel\BaseVM.cs" />
     <Compile Include="Utils\BindingProxy.cs" />
