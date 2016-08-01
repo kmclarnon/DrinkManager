@@ -13,18 +13,15 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="35"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="Button 1" Grid.Column="0" Margin="5,5,2.5,2.5"/>
-            <Button Content="Button 2" Grid.Column="1" Margin="2.5,5,2.5,2.5"/>
-            <Button Content="Button 3" Grid.Column="2" Margin="2.5,5,5,2.5"/>
+            <Button Content="Import drinks" Grid.Column="0" Margin="5" Command="{Binding Data.ImportCmd, Source={StaticResource proxy}}"/>
         </Grid>
         <DataGrid Grid.Row="1" Margin="5,2.5,5,5" AutoGenerateColumns="False" ItemsSource="{Binding Data.Drinks, Source={StaticResource proxy}, diag:PresentationTraceSources.TraceLevel=High}">
             <DataGrid.Columns>

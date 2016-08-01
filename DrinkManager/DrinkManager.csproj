@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>packages\CsvHelper.2.16.0.0\lib\net45\CsvHelper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
@@ -69,6 +73,7 @@
     <Compile Include="Data\Daos\DrinkDao.cs" />
     <Compile Include="Data\Table.cs" />
     <Compile Include="Model\Drink.cs" />
+    <Compile Include="Utils\RelayCommand.cs" />
     <Compile Include="ViewModel\BaseVM.cs" />
     <Compile Include="Utils\BindingProxy.cs" />
     <Compile Include="ViewModel\DrinkManagerVM.cs" />
@@ -96,6 +101,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

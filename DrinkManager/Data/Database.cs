@@ -43,16 +43,26 @@ namespace DrinkManager.Data
             return GetTable<T>(tableName).GetElements();
         }
 
-        private Table<int, T> GetTable<T>(string tableName)
+        public void InsertElement<T>(string tableName, T element)
+        {
+            GetTable<T>(tableName).InsertElement(element);
+        }
+
+        public void InsertElements<T>(string tableName, List<T> elements)
+        {
+            GetTable<T>(tableName).InsertElements(elements);
+        }
+
+        private Table<T> GetTable<T>(string tableName)
         {
             object result;
             if (!_tables.TryGetValue(tableName, out result))
             {
-                result = new Table<int, T>(GetTableFile(tableName), "Id");
+                result = new Table<T>(GetTableFile(tableName), "Id");
                 _tables[tableName] = result;
             }
 
-            return (Table<int, T>)result;
+            return (Table<T>)result;
         }
 
         private string GetTableFile(string tableName)

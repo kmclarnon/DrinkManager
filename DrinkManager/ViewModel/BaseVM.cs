@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DrinkManager.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DrinkManager.ViewModel
 {
@@ -19,6 +21,11 @@ namespace DrinkManager.ViewModel
         ///     Multicast event for property change notification
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     Dictionary to contain command bindings created by the GetCommand function
+        /// </summary>
+        private Dictionary<string, RelayCommand> _commands = new Dictionary<string, RelayCommand>();
 
         /// <summary>
         ///     Checks if a property already matches a desired value.  Sets the property and
@@ -93,6 +100,80 @@ namespace DrinkManager.ViewModel
             NotifyPropertyChanged(prop.Name);
             return true;
         }
+
+        #region Command Getters
+
+        /// <summary>
+        /// Gets the command associated with the given property and delegate.
+        /// <b>For use in property setters and getters only</b>
+        /// </summary>
+        /// <param name="execute">Action to be performed by the command. Recieves the command parameter as an argument</param>
+        /// <param name="propertyName">Property name to associate the command with.  Defaults to CallerMemberName</param>
+        /// <returns>The command composed of the supplied delegate</returns>
+        protected ICommand GetCommand(Action<object> execute, [CallerMemberName] string propertyName = null)
+        {
+            return this.GetCommand(execute, (x => true), propertyName);
+        }
+
+        /// <summary>
+        /// Gets the command associated with the given property and delegate.
+        /// <b>For use in property setters and getters only</b>
+        /// </summary>
+        /// <param name="execute">Action to be performed by the command</param>
+        /// <param name="propertyName">Property name to associate the command with.  Defaults to CallerMemberName</param>
+        /// <returns>The command composed of the supplied delegate</returns>
+        protected ICommand GetCommand(Action execute, [CallerMemberName] string propertyName = null)
+        {
+            return this.GetCommand((x => execute()), (x => true), propertyName);//
+        }
+
+        /// <summary>
+        /// Gets the command associated with the given property and delegates.
+        /// <b>For use in property setters and getters only</b>
+        /// </summary>
+        /// <param name="execute">Action to be performed by the command</param>
+        /// <param name="canExecute">Func that is used to determine if the command can be executed</param>
+        /// <param name="propertyName">Property name to associate the command with.  Defaults to CallerMemberName</param>
+        /// <returns>The command composed of the supplied delegates</returns>
+        protected ICommand GetCommand(Action execute, Func<bool> canExecute, [CallerMemberName] string propertyName = null)
+        {
+            return this.GetCommand((x => execute()), (x => canExecute()), propertyName);
+        }
+
+        /// <summary>
+        /// Gets the command associated with the given property and delegates.
+        /// <b>For use in property setters and getters only</b>
+        /// </summary>
+        /// <param name="execute">Action to be performed by the command. Recieves the command parameter as an argument</param>
+        /// <param name="canExecute">Func that is used to determine if the command can be executed</param>
+        /// <param name="propertyName">Property name to associate the command with.  Defaults to CallerMemberName</param>
+        /// <returns>The command composed of the supplied delegates</returns>
+        protected ICommand GetCommand(Action<object> execute, Func<bool> canExecute, [CallerMemberName] string propertyName = null)
+        {
+            return this.GetCommand(execute, (x => canExecute()), propertyName);
+        }
+
+        /// <summary>
+        /// Gets the command associated with the given property and delegates
+        /// <b>For use in property setters and getters only</b>
+        /// </summary>
+        /// <param name="execute">Action to be performed by the command. Recieves the command parameter as an argument</param>
+        /// <param name="canExecute">Predicate that is used to determine if the command can be executed</param>
+        /// <param name="propertyName">Property name to associate the command with.  Defaults to CallerMemberName</param>
+        /// <returns>The command composed of the supplied delegates</returns>
+        protected ICommand GetCommand(Action<object> execute, Predicate<object> canExecute, [CallerMemberName] string propertyName = null)
+        {
+            // find the command or create it if it doesn't exit
+            RelayCommand res;
+            if (!_commands.TryGetValue(propertyName, out res))
+            {
+                res = new RelayCommand(execute, canExecute);
+                _commands.Add(propertyName, res);
+            }
+
+            return res;
+        }
+        #endregion
 
         protected void NotifyPropertyChanged(string propertyName)
         {

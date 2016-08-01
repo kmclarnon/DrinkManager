@@ -21,5 +21,15 @@ namespace DrinkManager.DataSource.Daos
         {
             return GetElements();
         }
+
+        public void InsertDrink(Drink drink)
+        {
+            InsertElement(drink);
+        }
+
+        public void InsertDrinks(List<Drink> drinks)
+        {
+            InsertElements(drinks);
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace DrinkManager.Model
     public class Drink
     {
         [DataMember]
-        public int Id { get; private set; }
+        public int? Id { get; private set; }
 
         [DataMember]
         public string Name { get; set; }
