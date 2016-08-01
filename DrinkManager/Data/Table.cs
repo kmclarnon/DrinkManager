@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,17 +14,18 @@ namespace DrinkManager.Data
         private readonly Dictionary<int, V> _data;
         private readonly string _filePath;
         private readonly string _primaryKey;
-        private readonly DataContractJsonSerializer _serializer;
+        private readonly JsonSerializer _serializer;
 
         public Table(string filePath, string primaryKey)
         {
             _filePath = filePath;
             _primaryKey = primaryKey;
-            _serializer = new DataContractJsonSerializer(typeof(List<V>),
-                new DataContractJsonSerializerSettings()
-                {
-                    UseSimpleDictionaryFormat = true
-                });
+            _serializer = new JsonSerializer();
+            _serializer = JsonSerializer.Create(new JsonSerializerSettings()
+            {
+                Formatting = Formatting.Indented
+            });
+
             _data = ReadFromDisk().ToDictionary(v => GetKeyValue(v), v => v);
         }
 
@@ -58,6 +60,11 @@ namespace DrinkManager.Data
 
         private int GetNextKey()
         {
+            if (_data.Count == 0)
+            {
+                return 1;
+            }
+
             return _data.Keys.Max() + 1;
         }
 
@@ -72,16 +79,32 @@ namespace DrinkManager.Data
         private List<V> ReadFromDisk()
         {
             using (var stream = new FileStream(_filePath, FileMode.OpenOrCreate))
+            using (var reader = new StreamReader(stream))
             {
-                return (List<V>)_serializer.ReadObject(stream);
+                try
+                {
+                    List<V> results = (List<V>)_serializer.Deserialize(reader, typeof(List<V>));
+                    if (results == null)
+                    {
+                        return new List<V>();
+                    }
+
+                    return results;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Failed to read table file {0} : {1}", _filePath, e.Message);
+                    return new List<V>();
+                }
             }
         }
         
         private void WriteToDisk()
         {
             using (var stream = new FileStream(_filePath, FileMode.OpenOrCreate))
+            using (var writer = new StreamWriter(stream))
             {
-                _serializer.WriteObject(stream, _data.Values.ToList());
+                _serializer.Serialize(writer, _data.Values.ToList());
             }
         } 
 
