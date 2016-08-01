@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -9,7 +10,9 @@ namespace DrinkManager.Model
 {
     public class Drink
     {
+        [JsonProperty]
         public int? Id { get; private set; }
+
         public string Name { get; set; }
         public string Category { get; set; }
         public string Style { get; set; }
