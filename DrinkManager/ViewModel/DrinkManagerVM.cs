@@ -1,7 +1,7 @@
 ﻿using CsvHelper;
-using DrinkManager.DataSource;
-using DrinkManager.DataSource.Daos;
+using DrinkManager.Data.Daos;
 using DrinkManager.Model;
+using DrinkManager.Utils;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace DrinkManager.ViewModel
         public ICommand ImportCmd { get { return GetCommand(this.HandleImportCmd); } }
         public ObservableCollection<DrinkVM> Drinks { get; private set; }
 
-        private readonly DrinkDao _dao = new DrinkDao();
+        private readonly DrinkDao _drinkDao = new DrinkDao();
 
         public DrinkManagerVM()
         {
@@ -42,20 +42,36 @@ namespace DrinkManager.ViewModel
                 var csv = new CsvReader(reader);
                 while (csv.Read())
                 {
-                    Drink newDrink = new Drink();
-                    newDrink.Name = csv.GetField<string>("Name");
-                    newDrink.Category = csv.GetField<string>("Category");
-                    newDrink.Style = csv.GetField<string>("Style");
-                    drinks.Add(newDrink);
+                    try
+                    {
+                        Drink newDrink = new Drink();
+                        newDrink.Name = csv.GetField<string>("Name");
+                        newDrink.Source = csv.GetField<string>("Source");
+                        newDrink.CategoryClass = csv.GetField<string>("Category Class");
+                        newDrink.Style = csv.GetField<string>("Style");
+                        newDrink.Source = csv.GetField<string>("Source");
+                        newDrink.Garnish = csv.GetField<string>("Garnish");
+                        newDrink.Glass = csv.GetField<string>("Glass");
+                        newDrink.Directions = csv.GetField<string>("Directions");
+                        newDrink.Comments = csv.GetField<string>("Comments");
+                        newDrink.Rating = csv.GetField<string>("Rating");
+                        newDrink.DateAdded = DateTime.FromOADate(csv.GetField<long>("Date Added")).ToEpochTime();
+                        newDrink.DateTried = DateTime.FromOADate(csv.GetField<long>("Date Tried")).ToEpochTime();
+                        drinks.Add(newDrink);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Failed to read row {0}", csv.Row);
+                    }
                 }
             }
-            _dao.InsertDrinks(drinks);
+            _drinkDao.InsertDrinks(drinks);
             UpdateDrinks();
         }
 
         private void UpdateDrinks()
         {
-            foreach (var drink in _dao.GetAllDrinks())
+            foreach (var drink in _drinkDao.GetAllDrinks())
             {
                 this.Drinks.Add(new DrinkVM(drink));
             }

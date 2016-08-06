@@ -18,8 +18,8 @@ namespace DrinkManager.ViewModel
 
         public string Category
         {
-            get { return _drink.Category; }
-            set { SetProperty(_drink, value, nameof(_drink.Category)); }
+            get { return _drink.CategoryClass; }
+            set { SetProperty(_drink, value, nameof(_drink.CategoryClass)); }
         }
 
         public string Style

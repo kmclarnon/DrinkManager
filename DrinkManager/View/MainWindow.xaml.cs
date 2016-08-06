@@ -1,5 +1,4 @@
-﻿using DrinkManager.DataSource;
-using DrinkManager.ViewModel;
+﻿using DrinkManager.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
